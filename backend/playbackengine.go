@@ -267,6 +267,8 @@ func (p *playbackEngine) SetShuffle(shuffle bool) {
 	} else {
 		p.shuffleOrder = nil
 	}
+	// when shuffling, always play the full queue, i.e. start from index 0
+	p.playQueuePosition = 0
 
 	for _, cb := range p.onShuffleChange {
 		cb(shuffle)
@@ -511,6 +513,10 @@ func (p *playbackEngine) generateShuffleOrder() {
 	rand.Shuffle(len(p.shuffleOrder), func(i, j int) {
 		p.shuffleOrder[i], p.shuffleOrder[j] = p.shuffleOrder[j], p.shuffleOrder[i]
 	})
+
+	// retain current position: currently played track will always be on index 0
+	targetIndex := slices.Index(p.shuffleOrder, p.playQueuePosition)
+	p.shuffleOrder[0], p.shuffleOrder[targetIndex] = p.playQueuePosition, p.shuffleOrder[0]
 }
 
 func (p *playbackEngine) handleOnTrackChange() {
