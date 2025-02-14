@@ -21,6 +21,7 @@ type AuxControls struct {
 	VolumeControl *VolumeControl
 	loop          *IconButton
 	showQueue     *IconButton
+	shuffle       *IconButton
 
 	container *fyne.Container
 }
@@ -30,11 +31,14 @@ func NewAuxControls(initialVolume int) *AuxControls {
 		VolumeControl: NewVolumeControl(initialVolume),
 		loop:          NewIconButton(myTheme.RepeatIcon, nil),
 		showQueue:     NewIconButton(myTheme.PlayQueueIcon, nil),
+		shuffle:       NewIconButton(myTheme.ShuffleIcon, nil),
 	}
 	a.loop.IconSize = IconButtonSizeSmaller
 	a.loop.SetToolTip(lang.L("Repeat"))
 	a.showQueue.IconSize = IconButtonSizeSmaller
 	a.showQueue.SetToolTip(lang.L("Show play queue"))
+	a.shuffle.IconSize = IconButtonSizeSmaller
+	a.shuffle.SetToolTip(lang.L("Shuffle queue"))
 	a.container = container.NewHBox(
 		layout.NewSpacer(),
 		container.NewVBox(
@@ -42,7 +46,7 @@ func NewAuxControls(initialVolume int) *AuxControls {
 			a.VolumeControl,
 			container.New(
 				layout.NewCustomPaddedHBoxLayout(theme.Padding()*1.5),
-				layout.NewSpacer(), a.loop, a.showQueue, util.NewHSpace(5)),
+				layout.NewSpacer(), a.shuffle, a.loop, a.showQueue, util.NewHSpace(5)),
 			layout.NewSpacer(),
 		),
 	)
@@ -72,8 +76,16 @@ func (a *AuxControls) SetLoopMode(mode backend.LoopMode) {
 	}
 }
 
+func (a *AuxControls) SetShuffle(shuffle bool) {
+	a.shuffle.Highlighted = shuffle
+}
+
 func (a *AuxControls) OnShowPlayQueue(f func()) {
 	a.showQueue.OnTapped = f
+}
+
+func (a *AuxControls) OnClickShuffle(f func()) {
+	a.shuffle.OnTapped = f
 }
 
 type volumeSlider struct {

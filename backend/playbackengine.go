@@ -71,6 +71,7 @@ type playbackEngine struct {
 	onSongChange     []func(nowPlaying mediaprovider.MediaItem, justScrobbledIfAny *mediaprovider.Track)
 	onPlayTimeUpdate []func(float64, float64, bool)
 	onLoopModeChange []func(LoopMode)
+	onShuffleChange  []func(bool)
 	onVolumeChange   []func(int)
 	onSeek           []func()
 	onPaused         []func()
@@ -265,6 +266,10 @@ func (p *playbackEngine) SetShuffle(shuffle bool) {
 		p.generateShuffleOrder()
 	} else {
 		p.shuffleOrder = nil
+	}
+
+	for _, cb := range p.onShuffleChange {
+		cb(shuffle)
 	}
 }
 

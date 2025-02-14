@@ -105,6 +105,10 @@ func (p *PlaybackManager) OnLoopModeChange(cb func(LoopMode)) {
 	p.engine.onLoopModeChange = append(p.engine.onLoopModeChange, cb)
 }
 
+func (p *PlaybackManager) OnShuffleChange(cb func(bool)) {
+	p.engine.onShuffleChange = append(p.engine.onShuffleChange, cb)
+}
+
 // Registers a callback that is notified whenever the volume changes.
 func (p *PlaybackManager) OnVolumeChange(cb func(int)) {
 	p.engine.onVolumeChange = append(p.engine.onVolumeChange, cb)
@@ -336,6 +340,10 @@ func (p *PlaybackManager) SetNextLoopMode() {
 	case LoopOne:
 		p.cmdQueue.SetLoopMode(LoopNone)
 	}
+}
+
+func (p *PlaybackManager) ToggleShuffle() {
+	p.engine.SetShuffle(!p.engine.shuffle)
 }
 
 func (p *PlaybackManager) SetLoopMode(loopMode LoopMode) {
